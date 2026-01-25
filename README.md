@@ -59,6 +59,25 @@ npm run deploy
 └── package.json
 ```
 
+## 🔐 安全访问 (Basic Auth)
+
+为了保护你的 Agent 不被未经授权的访问，本项目支持标准的 HTTP Basic Auth 认证。
+
+### 配置方式
+
+在 `wrangler.jsonc` 或 Cloudflare Dashboard 的环境变量中设置以下变量：
+
+| 变量名 | 描述 | 默认值 |
+|--------|------|--------|
+| `SERVER_PASSWORD` | 访问密码。如果未设置，则**不启用**认证保护。 | (空) |
+| `SERVER_USERNAME` | 访问用户名。 | (空) |
+
+### 验证逻辑
+
+1. 只有当 `SERVER_PASSWORD` 环境变量被设置时，认证功能才会启用。
+2. 客户端请求必须包含 `Authorization: Basic <credentials>` 头。
+3. 如果认证失败，Server 会返回 `401 Unauthorized` 状态码。
+
 ## 💾 数据持久化 (S3/R2)
 
 Cloud Code 容器内置了对 S3 兼容存储（如 Cloudflare R2, AWS S3）的支持，通过 `TigrisFS` 将对象存储挂载为本地文件系统，实现数据的持久化保存。
