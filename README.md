@@ -7,6 +7,7 @@
 ## 🚀 快速开始
 
 ### 前置要求
+
 - Node.js (推荐 v20+)
 - pnpm (或 npm)
 - Wrangler CLI (`npm install -g wrangler`)
@@ -67,10 +68,10 @@ npm run deploy
 
 在 `wrangler.jsonc` 或 Cloudflare Dashboard 的环境变量中设置以下变量：
 
-| 变量名 | 描述 | 默认值 |
-|--------|------|--------|
-| `SERVER_PASSWORD` | 访问密码。如果未设置，则**不启用**认证保护。 | (空) |
-| `SERVER_USERNAME` | 访问用户名。 | (空) |
+| 变量名            | 描述                                         | 默认值 |
+| ----------------- | -------------------------------------------- | ------ |
+| `SERVER_PASSWORD` | 访问密码。如果未设置，则**不启用**认证保护。 | (空)   |
+| `SERVER_USERNAME` | 访问用户名。                                 | (空)   |
 
 ### 验证逻辑
 
@@ -86,16 +87,16 @@ Cloud Code 容器内置了对 S3 兼容存储（如 Cloudflare R2, AWS S3）的�
 
 要启用数据持久化，需要在容器运行环境中配置以下环境变量：
 
-| 变量名 | 描述 | 是否必须 | 默认值 |
-|--------|------|----------|--------|
-| `S3_ENDPOINT` | S3 API 端点地址 | ✅ 是 | - |
-| `S3_BUCKET` | 存储桶名称 | ✅ 是 | - |
-| `S3_ACCESS_KEY_ID` | 访问密钥 ID | ✅ 是 | - |
-| `S3_SECRET_ACCESS_KEY` | 访问密钥 Secret | ✅ 是 | - |
-| `S3_REGION` | 存储区域 | ❌ 否 | `auto` |
-| `S3_PATH_STYLE` | 是否使用 Path Style 访问 | ❌ 否 | `false` |
-| `S3_PREFIX` | 存储桶内的路径前缀（子目录） | ❌ 否 | (根目录) |
-| `TIGRISFS_ARGS` | 传递给 TigrisFS 的额外挂载参数 | ❌ 否 | - |
+| 变量名                 | 描述                           | 是否必须 | 默认值   |
+| ---------------------- | ------------------------------ | -------- | -------- |
+| `S3_ENDPOINT`          | S3 API 端点地址                | ✅ 是    | -        |
+| `S3_BUCKET`            | 存储桶名称                     | ✅ 是    | -        |
+| `S3_ACCESS_KEY_ID`     | 访问密钥 ID                    | ✅ 是    | -        |
+| `S3_SECRET_ACCESS_KEY` | 访问密钥 Secret                | ✅ 是    | -        |
+| `S3_REGION`            | 存储区域                       | ❌ 否    | `auto`   |
+| `S3_PATH_STYLE`        | 是否使用 Path Style 访问       | ❌ 否    | `false`  |
+| `S3_PREFIX`            | 存储桶内的路径前缀（子目录）   | ❌ 否    | (根目录) |
+| `TIGRISFS_ARGS`        | 传递给 TigrisFS 的额外挂载参数 | ❌ 否    | -        |
 
 ### 工作原理
 
@@ -111,6 +112,7 @@ Cloud Code 容器内置了对 S3 兼容存储（如 Cloudflare R2, AWS S3）的�
 容器内预装了 `cloudflared` CLI，可用于将容器内运行的服务（如开发服务器、Web 应用）通过 Cloudflare Tunnel 暴露到公网。
 
 这在以下场景非常有用：
+
 - 调试容器内运行的 Web 服务
 - 临时共享开发环境
 - 配置 SSH 访问

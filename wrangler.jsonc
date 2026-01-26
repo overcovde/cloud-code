@@ -3,19 +3,17 @@
   "name": "cloud-code",
   "main": "./src/index.ts",
   "compatibility_date": "2026-01-01",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
+  "compatibility_flags": ["nodejs_compat"],
   "minify": true,
   "upload_source_maps": true,
   "keep_vars": true,
   "observability": {
     "traces": {
-      "enabled": true
+      "enabled": true,
     },
     "logs": {
-      "enabled": true
-    }
+      "enabled": true,
+    },
   },
   "containers": [
     {
@@ -24,21 +22,21 @@
       "image": "./Dockerfile",
       "instance_type": "standard-1",
       "max_instances": 1,
-      "scheduling_policy": "regional"
-    }
+      "scheduling_policy": "regional",
+    },
   ],
   "durable_objects": {
     "bindings": [
       {
         "class_name": "AgentContainer",
-        "name": "AGENT_CONTAINER"
-      }
-    ]
+        "name": "AGENT_CONTAINER",
+      },
+    ],
   },
   "migrations": [
     {
       "new_sqlite_classes": ["AgentContainer"],
-      "tag": "container"
-    }
-  ]
+      "tag": "container",
+    },
+  ],
 }

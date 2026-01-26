@@ -1,16 +1,23 @@
 {
-	"name": "cloud-code",
-	"version": "0.0.0",
-	"private": true,
-	"scripts": {
-		"deploy": "wrangler deploy",
-		"dev": "wrangler dev",
-		"start": "wrangler dev",
-		"cf-typegen": "wrangler types"
-	},
-	"devDependencies": {
-		"@cloudflare/containers": "^0.1.0",
-		"typescript": "^5.5.2",
-		"wrangler": "^4.60.0"
-	}
+  "name": "cloud-code",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "start": "wrangler dev",
+    "cf-typegen": "wrangler types",
+    "lint": "oxlint",
+    "lint:fix": "oxlint --fix",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check"
+  },
+  "devDependencies": {
+    "@cloudflare/containers": "^0.1.0",
+    "oxfmt": "^0.26.0",
+    "oxlint": "^1.41.0",
+    "typescript": "^5.9.3",
+    "wrangler": "^4.60.0"
+  },
+  "packageManager": "pnpm@10.28.1"
 }

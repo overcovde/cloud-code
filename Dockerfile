@@ -27,7 +27,7 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
 # 复制预置内容
-COPY workspace /opt/workspace-init
+COPY config /opt/config-init
 
 # 创建启动脚本
 RUN install -m 755 /dev/stdin /entrypoint.sh <<'EOF'
@@ -35,75 +35,47 @@ RUN install -m 755 /dev/stdin /entrypoint.sh <<'EOF'
 set -e
 
 MOUNT_POINT="/root/s3"
-INIT_DIR="/opt/workspace-init"
 WORKSPACE_DIR="$MOUNT_POINT/workspace"
 XDG_DIR="$MOUNT_POINT/.opencode"
+GLOBAL_CONFIG_DIR="$XDG_DIR/config/opencode"
+CONFIG_INIT_DIR="/opt/config-init/opencode"
 
+# 初始化工作目录和 XDG 环境变量
 setup_workspace() {
-    mkdir -p "$WORKSPACE_DIR"
-    mkdir -p "$XDG_DIR"/{config,data,state}
-
+    mkdir -p "$WORKSPACE_DIR/project" "$GLOBAL_CONFIG_DIR" "$XDG_DIR"/{data,state}
     export XDG_CONFIG_HOME="$XDG_DIR/config"
     export XDG_DATA_HOME="$XDG_DIR/data"
     export XDG_STATE_HOME="$XDG_DIR/state"
+    PROJECT_DIR="$WORKSPACE_DIR/project"
 
-    PROJECT_DIR="$WORKSPACE_DIR"
+    # 仅在配置文件不存在时复制
+    for file in opencode.json AGENTS.md; do
+        if [ ! -f "$GLOBAL_CONFIG_DIR/$file" ]; then
+            cp "$CONFIG_INIT_DIR/$file" "$GLOBAL_CONFIG_DIR/" 2>/dev/null && echo "[INFO] 已初始化 $file" || true
+        fi
+    done
 }
 
-copy_init() {
-    cp -r "$INIT_DIR"/* "$WORKSPACE_DIR/" 2>/dev/null || true
-    cp -r "$INIT_DIR"/.[!.]* "$WORKSPACE_DIR/" 2>/dev/null || true
-}
-
-copy_init_if_empty() {
-    if [ -z "$(ls -A "$WORKSPACE_DIR" 2>/dev/null)" ]; then
-        echo "[INFO] 首次启动，复制预置内容..."
-        copy_init
-        echo "[OK] 预置内容复制完成"
-    fi
-}
-
-reset_mountpoint_dir() {
-    # 确保挂载点是一个干净目录（避免 mount 覆盖旧内容）
-    if mountpoint -q "$MOUNT_POINT" 2>/dev/null; then
-        fusermount -u "$MOUNT_POINT" 2>/dev/null || true
-    fi
+# 确保挂载点是一个干净目录
+reset_mountpoint() {
+    mountpoint -q "$MOUNT_POINT" 2>/dev/null && fusermount -u "$MOUNT_POINT" 2>/dev/null || true
     rm -rf "$MOUNT_POINT"
     mkdir -p "$MOUNT_POINT"
 }
 
+reset_mountpoint
+
 if [ -z "$S3_ENDPOINT" ] || [ -z "$S3_BUCKET" ] || [ -z "$S3_ACCESS_KEY_ID" ] || [ -z "$S3_SECRET_ACCESS_KEY" ]; then
     echo "[WARN] S3 配置不完整，使用本地目录模式"
-
-    # 在本地也使用同一套路径结构
-    reset_mountpoint_dir
-    setup_workspace
-    copy_init
 else
     echo "[INFO] 挂载 S3: ${S3_BUCKET} -> ${MOUNT_POINT}"
 
-    reset_mountpoint_dir
-
-    export AWS_ACCESS_KEY_ID="${S3_ACCESS_KEY_ID}"
-    export AWS_SECRET_ACCESS_KEY="${S3_SECRET_ACCESS_KEY}"
-    # 区域配置，默认 auto
+    export AWS_ACCESS_KEY_ID="$S3_ACCESS_KEY_ID"
+    export AWS_SECRET_ACCESS_KEY="$S3_SECRET_ACCESS_KEY"
     export AWS_REGION="${S3_REGION:-auto}"
-    # 路径风格，默认 false (virtual-hosted-style)
     export AWS_S3_PATH_STYLE="${S3_PATH_STYLE:-false}"
 
-    if [ -n "$S3_PREFIX" ]; then
-        BUCKET_ARG="${S3_BUCKET}:${S3_PREFIX}"
-    else
-        BUCKET_ARG="${S3_BUCKET}"
-    fi
-
-    # 构造挂载选项
-    MOUNT_OPTS=""
-    if [ -n "$TIGRISFS_ARGS" ]; then
-        MOUNT_OPTS="$MOUNT_OPTS $TIGRISFS_ARGS"
-    fi
-
-    /usr/bin/tigrisfs --endpoint "${S3_ENDPOINT}" $MOUNT_OPTS -f "$BUCKET_ARG" "$MOUNT_POINT" &
+    /usr/bin/tigrisfs --endpoint "$S3_ENDPOINT" ${TIGRISFS_ARGS:-} -f "${S3_BUCKET}${S3_PREFIX:+:$S3_PREFIX}" "$MOUNT_POINT" &
     sleep 3
 
     if ! mountpoint -q "$MOUNT_POINT"; then
@@ -111,10 +83,9 @@ else
         exit 1
     fi
     echo "[OK] S3 挂载成功"
-
-    setup_workspace
-    copy_init_if_empty
 fi
+
+setup_workspace
 
 cleanup() {
     echo "[INFO] 正在关闭..."

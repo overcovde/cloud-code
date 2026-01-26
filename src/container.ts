@@ -37,10 +37,9 @@ export class AgentContainer extends Container {
           }
         })
       }
-    }
-    catch (error) {
+    } catch (error) {
       console.error('SSE connection error:', error)
-			console.info(this._watchPromise)
+      console.info(this._watchPromise)
     }
   }
 

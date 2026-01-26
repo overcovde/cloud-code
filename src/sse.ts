@@ -15,8 +15,7 @@ export async function processSSEStream(
 
   while (true) {
     const { done, value } = await reader.read()
-    if (done)
-      break
+    if (done) break
 
     buffer += decoder.decode(value, { stream: true })
     const lines = buffer.split('\n')
@@ -24,14 +23,12 @@ export async function processSSEStream(
 
     for (const line of lines) {
       const trimmed = line.trim()
-      if (!trimmed.startsWith('data: '))
-        continue
+      if (!trimmed.startsWith('data: ')) continue
 
       try {
         const event = JSON.parse(trimmed.slice(6)) as SSEEvent
         onEvent(event)
-      }
-      catch {
+      } catch {
         // JSON 解析失败时跳过
       }
     }
