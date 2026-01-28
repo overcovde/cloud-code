@@ -29,7 +29,7 @@ export async function processSSEStream(
         const event = JSON.parse(trimmed.slice(6)) as SSEEvent
         onEvent(event)
       } catch {
-        // JSON 解析失败时跳过
+        // Skip on JSON parse failure
       }
     }
   }

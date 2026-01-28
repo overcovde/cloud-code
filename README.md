@@ -1,146 +1,147 @@
 # Cloud Code (Cloudflare + OpenCode)
 
-**Cloud Code** 是一个结合了 Cloudflare 强大基础设施与 OpenCode 智能能力的容器化 Agent 解决方案。
+**Cloud Code** is a containerized Agent solution that combines Cloudflare's powerful infrastructure with OpenCode's intelligent capabilities.
 
-这是一个基于 Cloudflare Workers 和 Cloudflare Containers 的 TypeScript 项目。它利用 Cloudflare 的基础设施来运行和管理容器化工作负载。
+This is a TypeScript project based on Cloudflare Workers and Cloudflare Containers. It leverages Cloudflare's infrastructure to run and manage containerized workloads.
 
-## 🚀 快速开始
+English | [简体中文](README.zh-CN.md)
+
+## 🚀 Quick Start
 
 [![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/miantiao-me/cloud-code)
 
-### 前置要求
+### Prerequisites
 
-- Node.js (推荐 v20+)
-- pnpm (或 npm)
-- Wrangler CLI (`npm install -g wrangler`)
+- pnpm (recommended)
+- Node.js (v20+ recommended)
+- Wrangler CLI (`pnpm add -g wrangler`)
 
-### 安装依赖
-
-```bash
-npm install
-```
-
-### 本地开发
-
-启动本地开发服务器：
+### Install Dependencies
 
 ```bash
-npm run dev
-# 或者
-npm run start
+pnpm install
 ```
 
-该命令会启动 `wrangler dev`，模拟 Cloudflare Workers 环境。
+### Local Development
 
-### 生成类型定义
-
-如果你修改了 `wrangler.jsonc` 中的 bindings，需要重新生成类型文件：
+Start the local development server:
 
 ```bash
-npm run cf-typegen
+pnpm dev
+# or
+pnpm start
 ```
 
-## 📦 部署
+This command will start `wrangler dev`, simulating the Cloudflare Workers environment.
 
-部署代码到 Cloudflare 全球网络：
+### Generate Type Definitions
+
+If you modify the bindings in `wrangler.jsonc`, you need to regenerate the type files:
 
 ```bash
-npm run deploy
+pnpm cf-typegen
 ```
 
-## 📂 项目结构
+## 📦 Deployment
+
+Deploy your code to Cloudflare's global network:
+
+```bash
+pnpm deploy
+```
+
+## 📂 Project Structure
 
 ```
 .
 ├── src/
-│   ├── index.ts        # Workers 入口文件 (ExportedHandler)
-│   ├── container.ts    # AgentContainer 类定义 (继承自 Container)
-│   └── sse.ts          # SSE (Server-Sent Events) 流处理逻辑
-├── worker-configuration.d.ts # 自动生成的环境绑定类型
-├── wrangler.jsonc      # Wrangler 配置文件
-├── tsconfig.json       # TypeScript 配置
+│   ├── index.ts        # Workers entry file (ExportedHandler)
+│   ├── container.ts    # AgentContainer class definition (extends Container)
+│   └── sse.ts          # SSE (Server-Sent Events) stream processing logic
+├── worker-configuration.d.ts # Auto-generated environment bindings types
+├── wrangler.jsonc      # Wrangler configuration file
+├── tsconfig.json       # TypeScript configuration
 └── package.json
 ```
 
-## 🔐 安全访问 (Basic Auth)
+## 🔐 Secure Access (Basic Auth)
 
-为了保护你的 Agent 不被未经授权的访问，本项目支持标准的 HTTP Basic Auth 认证。
+To protect your Agent from unauthorized access, this project supports standard HTTP Basic Auth authentication.
 
-### 配置方式
+### Configuration
 
-在 `wrangler.jsonc` 或 Cloudflare Dashboard 的环境变量中设置以下变量：
+Set the following variables in `wrangler.jsonc` or in the Cloudflare Dashboard environment variables:
 
-| 变量名            | 描述                                         | 默认值 |
-| ----------------- | -------------------------------------------- | ------ |
-| `SERVER_PASSWORD` | 访问密码。如果未设置，则**不启用**认证保护。 | (空)   |
-| `SERVER_USERNAME` | 访问用户名。                                 | (空)   |
+| Variable Name     | Description                                           | Default |
+| ----------------- | ----------------------------------------------------- | ------- |
+| `SERVER_PASSWORD` | Access password. If not set, authentication is **disabled**. | (empty) |
+| `SERVER_USERNAME` | Access username.                                      | (empty) |
 
-### 验证逻辑
+### Verification Logic
 
-1. 只有当 `SERVER_PASSWORD` 环境变量被设置时，认证功能才会启用。
-2. 客户端请求必须包含 `Authorization: Basic <credentials>` 头。
-3. 如果认证失败，Server 会返回 `401 Unauthorized` 状态码。
+1. Authentication is only enabled when the `SERVER_PASSWORD` environment variable is set.
+2. Client requests must include an `Authorization: Basic <credentials>` header.
+3. If authentication fails, the server returns a `401 Unauthorized` status code.
 
-## 💾 数据持久化 (S3/R2)
+## 💾 Data Persistence (S3/R2)
 
-Cloud Code 容器内置了对 S3 兼容存储（如 Cloudflare R2, AWS S3）的支持，通过 `TigrisFS` 将对象存储挂载为本地文件系统，实现数据的持久化保存。
+Cloud Code containers have built-in support for S3-compatible storage (such as Cloudflare R2, AWS S3), using `TigrisFS` to mount object storage as a local filesystem for persistent data storage.
 
-### 环境变量配置
+### Environment Variable Configuration
 
-要启用数据持久化，需要在容器运行环境中配置以下环境变量：
+To enable data persistence, configure the following environment variables in the container runtime:
 
-| 变量名                 | 描述                           | 是否必须 | 默认值   |
-| ---------------------- | ------------------------------ | -------- | -------- |
-| `S3_ENDPOINT`          | S3 API 端点地址                | ✅ 是    | -        |
-| `S3_BUCKET`            | 存储桶名称                     | ✅ 是    | -        |
-| `S3_ACCESS_KEY_ID`     | 访问密钥 ID                    | ✅ 是    | -        |
-| `S3_SECRET_ACCESS_KEY` | 访问密钥 Secret                | ✅ 是    | -        |
-| `S3_REGION`            | 存储区域                       | ❌ 否    | `auto`   |
-| `S3_PATH_STYLE`        | 是否使用 Path Style 访问       | ❌ 否    | `false`  |
-| `S3_PREFIX`            | 存储桶内的路径前缀（子目录）   | ❌ 否    | (根目录) |
-| `TIGRISFS_ARGS`        | 传递给 TigrisFS 的额外挂载参数 | ❌ 否    | -        |
+| Variable Name          | Description                                  | Required | Default  |
+| ---------------------- | -------------------------------------------- | -------- | -------- |
+| `S3_ENDPOINT`          | S3 API endpoint address                      | ✅ Yes   | -        |
+| `S3_BUCKET`            | Bucket name                                  | ✅ Yes   | -        |
+| `S3_ACCESS_KEY_ID`     | Access key ID                                | ✅ Yes   | -        |
+| `S3_SECRET_ACCESS_KEY` | Access key secret                            | ✅ Yes   | -        |
+| `S3_REGION`            | Storage region                               | ❌ No    | `auto`   |
+| `S3_PATH_STYLE`        | Whether to use Path Style access             | ❌ No    | `false`  |
+| `S3_PREFIX`            | Path prefix (subdirectory) within the bucket | ❌ No    | (root)   |
+| `TIGRISFS_ARGS`        | Additional mount arguments for TigrisFS      | ❌ No    | -        |
 
-### 工作原理
+### How It Works
 
-1. **挂载点**: 容器启动时，会将 S3 存储桶挂载到 `/root/s3`。
-2. **工作目录**: 实际的工作空间位于 `/root/s3/workspace`。
-3. **OpenCode 配置**: OpenCode 的配置文件（XDG 目录）也会存储在 `/root/s3/.opencode` 中，确保编辑器状态持久化。
-4. **初始化**:
-   - 如果 S3 存储桶（或指定的前缀路径）为空，容器会自动将预置的 `workspace` 目录内容复制进去。
-   - 如果 S3 配置缺失，容器将回退到非持久化的本地目录模式。
+1. **Mount Point**: When the container starts, the S3 bucket is mounted at `/root/s3`.
+2. **Working Directory**: The actual workspace is located at `/root/s3/workspace`.
+3. **OpenCode Configuration**: OpenCode's configuration files (XDG directory) are also stored in `/root/s3/.opencode`, ensuring editor state persistence.
+4. **Initialization**:
+   - If the S3 bucket (or specified prefix path) is empty, the container will automatically copy the preset `workspace` directory contents into it.
+   - If S3 configuration is missing, the container will fall back to non-persistent local directory mode.
 
-## 🌐 隧道穿透 (Cloudflared)
+## 🌐 Tunnel Exposure (Cloudflared)
 
-容器内预装了 `cloudflared` CLI，可用于将容器内运行的服务（如开发服务器、Web 应用）通过 Cloudflare Tunnel 暴露到公网。
+The container comes pre-installed with the `cloudflared` CLI, which can be used to expose services running inside the container (such as development servers, web applications) to the public internet via Cloudflare Tunnel.
 
-这在以下场景非常有用：
+This is useful in the following scenarios:
 
-- 调试容器内运行的 Web 服务
-- 临时共享开发环境
-- 配置 SSH 访问
+- Debugging web services running inside the container
+- Temporarily sharing development environments
+- Configuring SSH access
 
-使用示例（在容器终端中）：
+Usage example (in the container terminal):
 
 ```bash
-# 将容器内的 8080 端口暴露到公网
+# Expose port 8080 inside the container to the public internet
 cloudflared tunnel --url http://localhost:8080
 ```
 
-## 🛠 技术栈
+## 🛠 Tech Stack
 
 - **Runtime**: Cloudflare Workers
-- **语言**: TypeScript
-- **核心库**:
-  - `cloudflare:workers`: Workers 标准库
-  - `@cloudflare/containers`: 容器管理与交互
-- **工具**: Wrangler
-- **容器环境**:
+- **Language**: TypeScript
+- **Core Libraries**:
+  - `cloudflare:workers`: Workers standard library
+  - `@cloudflare/containers`: Container management and interaction
+- **Tools**: Wrangler
+- **Container Environment**:
   - `nikolaik/python-nodejs`: Python 3.12 + Node.js 22
-  - `tigrisfs`: S3 文件系统挂载
-  - `cloudflared`: Cloudflare Tunnel 客户端
-  - `opencode`: 智能编码 Agent
+  - `tigrisfs`: S3 filesystem mount
+  - `cloudflared`: Cloudflare Tunnel client
+  - `opencode`: Intelligent coding Agent
 
-## 📝 开发规范
+## 📝 Development Guidelines
 
-本项目官方语言为**中文**。
-详细的开发规范、代码风格和 Agent 行为准则，请参考 [AGENTS.md](./AGENTS.md)。
+The official language for this project is **English** (code, comments, and commit messages are in English). This README is the English version. For detailed development guidelines, code style, and Agent behavior rules, please refer to [AGENTS.md](./AGENTS.md).

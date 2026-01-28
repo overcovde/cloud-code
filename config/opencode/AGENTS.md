@@ -1,6 +1,5 @@
-# 全局规则
+# Global Rules
 
-## 注意事项
+## Notes
 
-- 始终使用简体中文和用户对话。
-- 当前项目是在一个沙箱环境中，可以执行命令和代码。
+- Current project runs in a sandbox environment where commands and code can be executed.

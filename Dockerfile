@@ -5,7 +5,7 @@ ENV NODE_ENV=production
 ARG TIGRISFS_VERSION=1.2.1
 ARG CLOUDFLARED_DEB_URL=https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
 
-# 安装系统依赖 + tigrisfs/cloudflared/opencode，并清理缓存
+# Install system dependencies + tigrisfs/cloudflared/opencode, then clean cache
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
@@ -26,10 +26,10 @@ RUN set -eux; \
     \
     rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
-# 复制预置内容
+# Copy preset config
 COPY config /opt/config-init
 
-# 创建启动脚本
+# Create startup script
 RUN install -m 755 /dev/stdin /entrypoint.sh <<'EOF'
 #!/bin/bash
 set -e
@@ -40,7 +40,7 @@ XDG_DIR="$MOUNT_POINT/.opencode"
 GLOBAL_CONFIG_DIR="$XDG_DIR/config/opencode"
 CONFIG_INIT_DIR="/opt/config-init/opencode"
 
-# 初始化工作目录和 XDG 环境变量
+# Initialize workspace and XDG environment variables
 setup_workspace() {
     mkdir -p "$WORKSPACE_DIR/project" "$GLOBAL_CONFIG_DIR" "$XDG_DIR"/{data,state}
     export XDG_CONFIG_HOME="$XDG_DIR/config"
@@ -48,15 +48,15 @@ setup_workspace() {
     export XDG_STATE_HOME="$XDG_DIR/state"
     PROJECT_DIR="$WORKSPACE_DIR/project"
 
-    # 仅在配置文件不存在时复制
+    # Copy config files only if they not exist
     for file in opencode.json AGENTS.md; do
         if [ ! -f "$GLOBAL_CONFIG_DIR/$file" ]; then
-            cp "$CONFIG_INIT_DIR/$file" "$GLOBAL_CONFIG_DIR/" 2>/dev/null && echo "[INFO] 已初始化 $file" || true
+            cp "$CONFIG_INIT_DIR/$file" "$GLOBAL_CONFIG_DIR/" 2>/dev/null && echo "[INFO] Initialized $file" || true
         fi
     done
 }
 
-# 确保挂载点是一个干净目录
+# Ensure mount point is a clean directory
 reset_mountpoint() {
     mountpoint -q "$MOUNT_POINT" 2>/dev/null && fusermount -u "$MOUNT_POINT" 2>/dev/null || true
     rm -rf "$MOUNT_POINT"
@@ -66,9 +66,9 @@ reset_mountpoint() {
 reset_mountpoint
 
 if [ -z "$S3_ENDPOINT" ] || [ -z "$S3_BUCKET" ] || [ -z "$S3_ACCESS_KEY_ID" ] || [ -z "$S3_SECRET_ACCESS_KEY" ]; then
-    echo "[WARN] S3 配置不完整，使用本地目录模式"
+    echo "[WARN] Incomplete S3 config, using local directory mode"
 else
-    echo "[INFO] 挂载 S3: ${S3_BUCKET} -> ${MOUNT_POINT}"
+    echo "[INFO] Mounting S3: ${S3_BUCKET} -> ${MOUNT_POINT}"
 
     export AWS_ACCESS_KEY_ID="$S3_ACCESS_KEY_ID"
     export AWS_SECRET_ACCESS_KEY="$S3_SECRET_ACCESS_KEY"
@@ -79,16 +79,16 @@ else
     sleep 3
 
     if ! mountpoint -q "$MOUNT_POINT"; then
-        echo "[ERROR] S3 挂载失败"
+        echo "[ERROR] S3 mount failed"
         exit 1
     fi
-    echo "[OK] S3 挂载成功"
+    echo "[OK] S3 mounted successfully"
 fi
 
 setup_workspace
 
 cleanup() {
-    echo "[INFO] 正在关闭..."
+    echo "[INFO] Shutting down..."
     if [ -n "$OPENCODE_PID" ]; then
         kill -TERM "$OPENCODE_PID" 2>/dev/null
         wait "$OPENCODE_PID" 2>/dev/null
@@ -100,7 +100,7 @@ cleanup() {
 }
 trap cleanup SIGTERM SIGINT
 
-echo "[INFO] 启动 OpenCode..."
+echo "[INFO] Starting OpenCode..."
 cd "$PROJECT_DIR"
 opencode web --port 2633 --hostname 0.0.0.0 &
 OPENCODE_PID=$!

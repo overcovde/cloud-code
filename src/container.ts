@@ -44,7 +44,7 @@ export class AgentContainer extends Container {
   }
 
   override async onStart(): Promise<void> {
-    // 不 await，让 SSE 监听在后台运行，避免阻塞 blockConcurrencyWhile
+    // Fire-and-forget: let SSE listener run in background to avoid blocking blockConcurrencyWhile
     this._watchPromise = this.watchContainer()
   }
 }
@@ -54,7 +54,7 @@ const SINGLETON_CONTAINER_ID = 'cf-singleton-container'
 export async function forwardRequestToContainer(request: Request) {
   const objectId = env.AGENT_CONTAINER.idFromName(SINGLETON_CONTAINER_ID)
   const container = env.AGENT_CONTAINER.get(objectId, {
-    locationHint: 'wnam', // 强制美国西部
+    locationHint: 'wnam', // Force west US region
   })
 
   return container.fetch(request)
